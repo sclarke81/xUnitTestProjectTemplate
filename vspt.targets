@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <OutDir Condition=" '$(OutDir)' == '' ">$(MSBuildProjectDirectory)\bin\</OutDir>
+    <OutDir Condition="!HasTrailingSlash('$(OutDir)')">$(OutDir)\</OutDir>
+    <IntermediateDir Condition=" '$(IntermediateDir)' == '' ">$(MSBuildProjectDirectory)\obj\</IntermediateDir>
+    <IntermediateDir Condition="!HasTrailingSlash('$(IntermediateDir)')">$(IntermediateDir)\</IntermediateDir>
+    <VsixSourceDir Condition=" '$(VsixSourceDir)' == '' ">$(MSBuildProjectDirectory)\VsixSource\</VsixSourceDir>
+    <VsixSourceDir Condition="!HasTrailingSlash('$(VsixSourceDir)')">$(VsixSourceDir)\</VsixSourceDir>
+    <TemplateSourceDir Condition=" '$(TemplateSourceDir)' == '' ">$(MSBuildProjectDirectory)\TemplateSource\</TemplateSourceDir>
+    <TemplateSourceDir Condition="!HasTrailingSlash('$(TemplateSourceDir)')">$(TemplateSourceDir)\</TemplateSourceDir>
+    <VsixManifestFileName Condition=" '$(VsixManifestFileName)' == '' ">extension.vsixmanifest</VsixManifestFileName>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <VsptProject>
+      <Version />
+    </VsptProject>
+    <TemplateProject>
+      <TemplateType />
+    </TemplateProject>
+  </ItemDefinitionGroup>
+
+  <ItemGroup>
+    <VsixSourceFiles Include="$(VsixSourceDir)**\*" />
+    <VsixDestinationFiles Include="@(VsixSourceFiles->'$(IntermediateDir)%(RecursiveDir)%(Filename)%(Extension)')" />
+    <TemplateSourceFiles Include="$(TemplateSourceDir)**\*" />
+    <VsixManifestSourceFile Include="$(VsixSourceDir)$(VsixManifestFileName)" />
+    <VsixManifestDestinationFile Include="$(IntermediateDir)$(VsixManifestFileName)" />
+  </ItemGroup>
+
+  <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
+
+  <Target Name="Clean">
+    <RemoveDir Directories="$(OutDir)" />
+    <RemoveDir Directories="$(IntermediateDir)" />
+  </Target>
+
+  <Target Name="Build"
+          DependsOnTargets="BuildTemplate;UpdateManifest">
+    <MakeDir Directories="$(OutDir)" />
+    <Exec Command="PowerShell -NoProfile -ExecutionPolicy Bypass -Command Compress-Archive -Path $(IntermediateDir)\* -DestinationPath $(OutDir)\$(MSBuildProjectName).%(VsptProject.Version).zip -Force" />
+    <Move SourceFiles="$(OutDir)\$(MSBuildProjectName).%(VsptProject.Version).zip" DestinationFiles="$(OutDir)\$(MSBuildProjectName).%(VsptProject.Version).vsix" />
+  </Target>
+
+  <Target Name="BuildTemplate"
+          Inputs="$(TemplateSourceFiles)"
+          Outputs="$(IntermediateDir)%(TemplateProject.TemplateType)\$(MSBuildProjectName).zip">
+    <MakeDir Directories="$(IntermediateDir)%(TemplateProject.TemplateType)" />
+    <Exec Command="PowerShell -NoProfile -ExecutionPolicy Bypass -Command Compress-Archive -Path $(TemplateSourceDir)\* -DestinationPath $(IntermediateDir)%(TemplateProject.TemplateType)\$(MSBuildProjectName).zip -Force" />
+  </Target>
+
+  <Target Name="UpdateManifest"
+          DependsOnTargets="CopyVsixSource">
+    <ItemGroup>
+      <XmlConfigUpdates Include="extension.vsixmanifest">
+        <XPath>/ns:PackageManifest/ns:Metadata/ns:Identity/@Version</XPath>
+        <NewValue>%(VsptProject.Version)</NewValue>
+      </XmlConfigUpdates>
+      <XmlConfigUpdates Include="extension.vsixmanifest">
+        <XPath>/ns:PackageManifest/ns:Metadata/ns:Identity/@Id</XPath>
+        <NewValue>$(MSBuildProjectName)</NewValue>
+      </XmlConfigUpdates>
+    </ItemGroup>
+
+    <XmlPoke Namespaces="&lt;Namespace Prefix='ns' Uri='http://schemas.microsoft.com/developer/vsx-schema/2011'/&gt;"
+             XmlInputPath="@(VsixManifestDestinationFile)"
+             Query="%(XmlConfigUpdates.XPath)"
+             Value="%(XmlConfigUpdates.NewValue)"/>
+  </Target>
+
+  <Target Name="CopyVsixSource"
+          Inputs="@(VsixSourceFiles)"
+          Outputs="@(VsixDestinationFiles)">
+    <Copy SourceFiles="@(VsixSourceFiles)" DestinationFiles="@(VsixDestinationFiles)" />
+  </Target>
+</Project>
