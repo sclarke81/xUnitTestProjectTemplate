@@ -1,0 +1,10 @@
+root = true
+
+# General whitespace rules.
+[*]
+indent_style = space
+trim_trailing_whitespace = true
+
+# Xml project files
+[*.{targets,vsptproj}]
+indent_size = 2
