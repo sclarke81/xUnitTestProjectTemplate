@@ -45,7 +45,7 @@
   </Target>
 
   <Target Name="BuildTemplate"
-          Inputs="$(TemplateSourceFiles)"
+          Inputs="@(TemplateSourceFiles)"
           Outputs="$(IntermediateDir)%(TemplateProject.TemplateType)\$(MSBuildProjectName).zip">
     <MakeDir Directories="$(IntermediateDir)%(TemplateProject.TemplateType)" />
     <Exec Command="PowerShell -NoProfile -ExecutionPolicy Bypass -Command Compress-Archive -Path $(TemplateSourceDir)\* -DestinationPath $(IntermediateDir)%(TemplateProject.TemplateType)\$(MSBuildProjectName).zip -Force" />
