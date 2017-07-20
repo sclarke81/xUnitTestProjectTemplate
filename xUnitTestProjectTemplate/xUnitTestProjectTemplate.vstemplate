@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>xUnit Test Project</Name>
+    <Description>A project that contains xUnit.net tests with Visual Studio Runner</Description>
+    <ProjectType>CSharp</ProjectType>
+    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <SortOrder>1000</SortOrder>
+    <TemplateID>9edc632d-62d8-4931-80fd-885596ba070d</TemplateID>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>UnitTestProject</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <Icon>xUnitTestProjectTemplate.ico</Icon>
+  </TemplateData>
+  <TemplateContent>
+    <Project File="UnitTestProject.csproj" ReplaceParameters="true">
+      <ProjectItem ReplaceParameters="false" TargetFileName="packages.config">packages.config</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
+      <ProjectItem ReplaceParameters="true" OpenInEditor="true">UnitTest.cs</ProjectItem>
+    </Project>
+  </TemplateContent>
+</VSTemplate>
