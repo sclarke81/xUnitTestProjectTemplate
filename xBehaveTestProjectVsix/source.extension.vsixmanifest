@@ -4,6 +4,7 @@
     <Identity Id="xBehaveProjectTemplate" Version="1.0.0.0" Language="en-US" Publisher="Stephen Clarke" />
     <DisplayName>xBehave Test Project Template</DisplayName>
     <Description>A project that contains xBehave.net tests with Visual Studio Runner.</Description>
+    <Icon>xBehaveTestProjectTemplate.ico</Icon>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[11.0,)" />

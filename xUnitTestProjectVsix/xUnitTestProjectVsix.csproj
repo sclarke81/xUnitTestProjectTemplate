@@ -51,6 +51,10 @@
   <ItemGroup>
     <Content Include="index.html" />
     <Content Include="stylesheet.css" />
+    <Content Include="xUnitTestProjectTemplate.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\xUnitTestProjectTemplate\xUnitTestProjectTemplate.csproj">
