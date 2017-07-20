@@ -1,11 +1,4 @@
 #---------------------------------#
-#      general configuration      #
-#---------------------------------#
-
-# version format
-version: 1.0.{build}
-
-#---------------------------------#
 #    environment configuration    #
 #---------------------------------#
 
@@ -44,21 +37,3 @@ artifacts:
 
   # pushing all *.nupkg files in build directory recursively
   - path: '**\*.vsix'
-
-
-#---------------------------------#
-#     deployment configuration    #
-#---------------------------------#
-
-# providers: Local, FTP, WebDeploy, AzureCS, AzureBlob, S3, NuGet, Environment
-# provider names are case-sensitive!
-deploy:
-
-    # Deploy to GitHub Releases
-  - provider: GitHub
-    artifact: /.*\.vsix/           # upload all NuGet packages to release assets
-    draft: false
-    prerelease: false
-    on:
-      branch: master                # release from master branch only
-      appveyor_repo_tag: true       # deploy on tag push only
